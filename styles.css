@@ -332,6 +332,18 @@ h2 {
   margin-top: 2px;
 }
 
+.pub-authors a {
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  text-decoration-color: var(--color-border);
+  text-underline-offset: 2px;
+}
+
+.pub-authors a:hover {
+  color: var(--color-accent);
+  text-decoration-color: var(--color-accent);
+}
+
 .pub-venue {
   font-size: 0.88rem;
   color: var(--color-text-secondary);
