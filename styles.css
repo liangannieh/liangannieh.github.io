@@ -365,7 +365,9 @@ h2 {
   content: "↓ ";
 }
 
-.pub-links a.bibtex-toggle::before {
+.pub-links a.bibtex-toggle::before,
+.pub-links a[href^="https://www.youtube"]::before,
+.pub-links a[href^="https://dl.acm"]::before {
   content: "";
 }
 

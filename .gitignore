@@ -1,0 +1,12 @@
+# Duplicate root-level PDFs (originals in papers/), except CV
+/*.pdf
+!CV-AnnieLiang.pdf
+
+# Duplicate lecture notes (originals in papers/lecture-notes/)
+/lecture notes/
+
+# macOS
+.DS_Store
+
+# Claude Code config
+.claude/
