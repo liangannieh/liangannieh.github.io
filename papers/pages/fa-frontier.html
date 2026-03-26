@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Algorithm Design: A Fairness-Accuracy Frontier — Annie Liang</title>
+  <meta name="description" content="Annie Liang, Jay Lu, Xiaosheng Mu, and Kyohei Okumura study tradeoffs between fairness and accuracy, formalizing a fairness-accuracy frontier determined by group-skew of inputs.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "name": "Algorithm Design: A Fairness-Accuracy Frontier",
+    "author": [{"@type":"Person","name":"Annie Liang"},{"@type":"Person","name":"Jay Lu"},{"@type":"Person","name":"Xiaosheng Mu"},{"@type":"Person","name":"Kyohei Okumura"}],
+    "datePublished": "2025"
+  }
+  </script>
+</head>
+<body>
+  <header><div class="container"><h1><a href="../../index.html">Annie Liang</a></h1><nav aria-label="Main navigation"><ul><li><a href="../../index.html#about">About</a></li><li><a href="../../index.html#research">Research</a></li><li><a href="../../index.html#teaching">Teaching</a></li><li><a href="../../index.html#contact">Contact</a></li></ul></nav></div></header>
+  <main>
+    <section class="paper-detail">
+      <div class="container">
+        <p class="paper-back"><a href="../../index.html#research">&larr; All research</a></p>
+        <h2>Algorithm Design: A Fairness-Accuracy Frontier</h2>
+        <p class="pub-authors">Annie Liang, Jay Lu, Xiaosheng Mu, and Kyohei Okumura</p>
+        <p class="pub-venue">2025</p>
+        <div class="paper-abstract">
+          <h3>Abstract</h3>
+          <p>Algorithm designers increasingly optimize not only for accuracy, but also for the fairness of the algorithm across pre-defined groups. We study the tradeoffs between fairness and accuracy induced by a given set of inputs to the algorithm. We formalize these tradeoffs as a fairness-accuracy frontier, defined as the set of outcomes that cannot be simultaneously improved upon in both fairness and accuracy. Our results show that the shape of the frontier is determined by a simple property of the inputs, which we call <em>group-skew</em>. Group-skewed inputs inherently advantage one group, resulting in lower errors for that group even when the algorithm is optimized for the other. We show that decreasing accuracy for both groups in order to increase fairness can be justified by fairness considerations if and only if inputs are group-skewed. We further study an information design problem where a designer flexibly regulates the inputs, but another agent chooses the algorithm. The optimal regulation of inputs generally depends on the designer's preferences, but when inputs are not group-skewed then two implications hold across all designer preferences: (1) banning group identity is strictly suboptimal, and (2) if group identity is available, then banning any informative input is strictly suboptimal.</p>
+        </div>
+        <div class="paper-download">
+          <a href="../FA_Frontier.pdf" class="download-btn">Download PDF</a>
+          <a href="../../slides/slides_AlgoFairness.pdf" class="download-btn" style="margin-left:12px; background: var(--color-text-secondary);">Slides</a>
+        </div>
+        <div class="paper-bibtex">
+          <h3>BibTeX</h3>
+          <div class="bibtex-block open"><pre>@article{liang2026fairness,
+  author = {Annie Liang and Jay Lu and Xiaosheng Mu and Kyohei Okumura},
+  title = {Algorithm Design: A Fairness-Accuracy Frontier},
+  journal = {Journal of Political Economy},
+  year = {2026}
+}</pre></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer><div class="container"><p>&copy; 2026 Annie Liang</p></div></footer>
+</body>
+</html>
