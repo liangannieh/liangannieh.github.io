@@ -523,7 +523,7 @@ footer {
   }
 
   .about-bio {
-    text-align: center;
+    text-align: left;
   }
 
   .about-links {
@@ -549,6 +549,10 @@ footer {
 
   .nav-toggle {
     display: block;
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   header .container {
@@ -561,5 +565,14 @@ footer {
 
   h2 {
     font-size: 1.3rem;
+  }
+
+  .filter-btn {
+    padding: 5px 12px;
+    font-size: 0.78rem;
+  }
+
+  .topic-filters {
+    gap: 6px;
   }
 }
