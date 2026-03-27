@@ -348,6 +348,7 @@ h2 {
   font-size: 0.88rem;
   color: var(--color-text-secondary);
   font-style: italic;
+  font-weight: 600;
   margin-top: 2px;
 }
 
