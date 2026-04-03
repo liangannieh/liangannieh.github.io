@@ -25,7 +25,7 @@ html {
 
 body {
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.7;
   color: var(--color-text);
   background: var(--color-bg);
@@ -297,11 +297,25 @@ h2 {
 }
 
 /* === Publications === */
+.section-heading {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+.pub-section + .pub-section {
+  margin-top: 40px;
+}
+
 .pub-year-group {
   margin-bottom: 36px;
 }
 
-.pub-year-group h3 {
+.pub-year-group h3,
+.pub-year-group h4 {
   font-family: var(--font-serif);
   font-size: 1.15rem;
   font-weight: 600;
