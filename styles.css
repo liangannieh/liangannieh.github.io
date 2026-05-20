@@ -365,6 +365,13 @@ h2 {
   margin-top: 2px;
 }
 
+.pub-conf {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  margin-top: 2px;
+}
+
 .pub-links {
   margin-top: 4px;
 }
@@ -508,6 +515,22 @@ footer {
 }
 
 .paper-detail .pub-venue {
+  margin-bottom: 24px;
+}
+
+.paper-detail .pub-venue:has(+ .pub-conf) {
+  margin-bottom: 0;
+}
+
+.paper-detail .pub-authors:has(+ .pub-conf) {
+  margin-bottom: 0;
+}
+
+.paper-detail .pub-conf {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
   margin-bottom: 24px;
 }
 
