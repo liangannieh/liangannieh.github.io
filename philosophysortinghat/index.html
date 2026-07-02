@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Philosophy Sorting Hat</title>
+    <meta
+      name="description"
+      content="A personality-style quiz that sorts respondents into a philosophy family or school of thought."
+    >
+    <meta name="robots" content="noindex">
+    <link rel="canonical" href="https://anniehliang.com/philosophysortinghat/">
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='29' fill='%23315943'/%3E%3Ctext x='32' y='38' text-anchor='middle' font-size='20' font-family='Arial' font-weight='700' fill='%23fffdf8'%3EPH%3C/text%3E%3C/svg%3E"
+    >
+    <link rel="preload" href="assets/philosophy-quiz-table.png" as="image">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="quiz-pane" aria-labelledby="app-title">
+        <header class="app-header">
+          <div class="brand">
+            <div class="brand-mark" aria-hidden="true">PH</div>
+            <div>
+              <p class="eyebrow">Philosophy Sorting Hat</p>
+              <h1 id="app-title">Find your philosophy family</h1>
+            </div>
+          </div>
+          <div class="question-count" id="question-count" aria-live="polite"></div>
+        </header>
+
+        <section class="quiz-view" id="quiz-view" aria-labelledby="question-title">
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+
+          <form id="quiz-form" class="quiz-form">
+            <fieldset class="question-field">
+              <legend id="question-title"></legend>
+              <p id="question-copy" class="question-copy"></p>
+              <div id="options-list" class="options-list"></div>
+            </fieldset>
+
+            <div class="actions">
+              <button type="button" class="button secondary" id="back-button">Back</button>
+              <button type="submit" class="button primary" id="next-button">Next</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="result-view is-hidden" id="result-view" aria-live="polite">
+          <div class="result-kicker">Your result</div>
+          <h2 id="result-title"></h2>
+          <p id="result-summary" class="result-summary"></p>
+          <div id="result-description" class="result-description"></div>
+
+          <div class="result-meta">
+            <div>
+              <h3>Secondary influence</h3>
+              <p id="secondary-result"></p>
+            </div>
+            <div>
+              <h3>Nearby thinkers</h3>
+              <p id="result-thinkers"></p>
+            </div>
+          </div>
+
+          <div class="affinity-block">
+            <h3>Top affinities</h3>
+            <div id="affinity-list" class="affinity-list"></div>
+          </div>
+
+          <div class="reading-block">
+            <h3>Suggested starting points</h3>
+            <ul id="reading-list"></ul>
+          </div>
+
+          <div class="actions result-actions">
+            <button type="button" class="button secondary" id="retake-button">Retake</button>
+            <button type="button" class="button primary" id="copy-button">Copy result</button>
+          </div>
+          <p class="copy-status" id="copy-status" role="status"></p>
+        </section>
+      </section>
+
+      <aside class="visual-pane" aria-label="Philosophy desk">
+        <img
+          src="assets/philosophy-quiz-table.png"
+          alt="A warm wooden desk with books, a notebook, leaves, a compass, a stone, and candlelight."
+        >
+        <div class="visual-overlay">
+          <p>18 philosophy families</p>
+          <div id="type-chip-list" class="type-chip-list" aria-hidden="true"></div>
+        </div>
+      </aside>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
