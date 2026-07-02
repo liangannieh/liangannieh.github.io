@@ -1004,7 +1004,11 @@ const TYPE_BALANCE = (() => {
 const state = {
   currentIndex: 0,
   path: [...QUESTION_SEEDS],
-  responses: {}
+  responses: {},
+  shareData: null,
+  shareText: "",
+  shareImagePromise: null,
+  shareImageDataUrlPromise: null
 };
 
 const els = {
@@ -1230,6 +1234,13 @@ function renderResult() {
     `;
   }).join("");
 
+  state.shareData = getShareData();
+  state.shareText = getShareText(state.shareData);
+  state.shareImagePromise = createShareImageBlob(state.shareData).catch(() => null);
+  state.shareImageDataUrlPromise = state.shareImagePromise
+    .then((blob) => blob ? blobToDataUrl(blob) : "")
+    .catch(() => "");
+  hideSharePreview();
   els.copyStatus.textContent = "";
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -1263,6 +1274,11 @@ function resetQuiz() {
   state.currentIndex = 0;
   state.path = [...QUESTION_SEEDS];
   state.responses = {};
+  state.shareData = null;
+  state.shareText = "";
+  state.shareImagePromise = null;
+  state.shareImageDataUrlPromise = null;
+  hideSharePreview();
   els.resultView.classList.add("is-hidden");
   els.quizView.classList.remove("is-hidden");
   els.copyStatus.textContent = "";
@@ -1270,25 +1286,502 @@ function resetQuiz() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function getShareText() {
+function getShareData() {
   const ranked = scoreResponses();
   const primary = ranked[0];
   const secondary = ranked[1];
+  const primaryDetails = TYPE_DETAILS[primary.key];
+  const topScore = Math.max(primary.score, 1);
+  const affinities = ranked.slice(0, 6).map((result) => ({
+    title: result.title,
+    score: Math.round((result.score / topScore) * 100)
+  }));
+
+  return {
+    primary,
+    secondary,
+    details: primaryDetails,
+    affinities
+  };
+}
+
+function getShareText(data = getShareData()) {
+  const { primary, secondary, details, affinities } = data;
   return [
     `My Philosophy Sorting Hat result: ${primary.title}`,
+    "",
     primary.summary,
-    `Secondary influence: ${secondary.title}`
+    "",
+    ...primary.description,
+    "",
+    "What this means",
+    ...details.notes.map((note) => `- ${note}`),
+    "",
+    `Secondary influence: ${secondary.title}`,
+    secondary.summary,
+    "",
+    `Nearby thinkers: ${primary.thinkers}`,
+    "",
+    "Top affinities",
+    ...affinities.map((result) => `- ${result.title}: ${result.score === 100 ? "Top" : `${result.score}/100`}`),
+    "",
+    "Suggested starting points",
+    ...details.readings.map((reading) => `- ${reading.title}, ${reading.author}: ${reading.note}`)
   ].join("\n");
 }
 
+function wrapCanvasText(context, text, maxWidth) {
+  const words = text.split(/\s+/);
+  const lines = [];
+  let line = "";
+
+  words.forEach((word) => {
+    const testLine = line ? `${line} ${word}` : word;
+    if (context.measureText(testLine).width <= maxWidth) {
+      line = testLine;
+      return;
+    }
+
+    if (line) {
+      lines.push(line);
+    }
+    line = word;
+  });
+
+  if (line) {
+    lines.push(line);
+  }
+  return lines;
+}
+
+function drawWrappedText(context, text, x, y, maxWidth, lineHeight) {
+  const lines = wrapCanvasText(context, text, maxWidth);
+  lines.forEach((line, index) => {
+    context.fillText(line, x, y + index * lineHeight);
+  });
+  return y + lines.length * lineHeight;
+}
+
+function drawShareCardContent(context, data, width, height = 0, measureOnly = false) {
+  const { primary, secondary, details, affinities } = data;
+  const margin = 72;
+  const contentWidth = width - margin * 2;
+  const cardHeight = height || context.canvas.height;
+  let y = margin;
+
+  const setFont = (size, weight = 500) => {
+    context.font = `${weight} ${size}px Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
+  };
+  const drawText = (text, x, top, maxWidth, lineHeight) => {
+    if (measureOnly) {
+      return top + wrapCanvasText(context, text, maxWidth).length * lineHeight;
+    }
+    return drawWrappedText(context, text, x, top, maxWidth, lineHeight);
+  };
+  const drawRule = (top) => {
+    if (!measureOnly) {
+      context.strokeStyle = "#e8e2d6";
+      context.lineWidth = 2;
+      context.beginPath();
+      context.moveTo(margin, top);
+      context.lineTo(width - margin, top);
+      context.stroke();
+    }
+  };
+
+  if (!measureOnly) {
+    context.fillStyle = "#f8f6ef";
+    context.fillRect(0, 0, width, cardHeight);
+    context.strokeStyle = "#c7bead";
+    context.lineWidth = 2;
+    context.strokeRect(28, 28, width - 56, cardHeight - 56);
+
+    context.fillStyle = "#20211e";
+    context.fillRect(margin, y, 44, 44);
+    context.fillStyle = "#fffdf8";
+    setFont(19, 700);
+    context.textAlign = "center";
+    context.fillText("PH", margin + 22, y + 29);
+    context.textAlign = "left";
+  }
+
+  setFont(24, 650);
+  if (!measureOnly) {
+    context.fillStyle = "#465943";
+    context.fillText("Philosophy Sorting Hat", margin + 60, y + 30);
+  }
+  y += 78;
+
+  setFont(58, 700);
+  if (!measureOnly) {
+    context.fillStyle = "#20211e";
+  }
+  y = drawText(primary.title, margin, y, contentWidth, 64) + 12;
+
+  setFont(30, 650);
+  if (!measureOnly) {
+    context.fillStyle = "#465943";
+  }
+  y = drawText(primary.summary, margin, y, contentWidth, 39) + 28;
+
+  setFont(23, 400);
+  if (!measureOnly) {
+    context.fillStyle = "#30322e";
+  }
+  primary.description.forEach((paragraph) => {
+    y = drawText(paragraph, margin, y, contentWidth, 34) + 16;
+  });
+
+  drawRule(y + 4);
+  y += 42;
+
+  setFont(22, 700);
+  if (!measureOnly) {
+    context.fillStyle = "#465943";
+    context.fillText("What this means", margin, y);
+  }
+  y += 34;
+
+  setFont(21, 400);
+  if (!measureOnly) {
+    context.fillStyle = "#30322e";
+  }
+  details.notes.forEach((note) => {
+    y = drawText(`- ${note}`, margin, y, contentWidth, 31) + 10;
+  });
+
+  drawRule(y + 6);
+  y += 44;
+
+  const columnGap = 48;
+  const columnWidth = (contentWidth - columnGap) / 2;
+  const columnStart = y;
+
+  setFont(22, 700);
+  if (!measureOnly) {
+    context.fillStyle = "#465943";
+    context.fillText("Secondary influence", margin, y);
+  }
+  y += 34;
+  setFont(21, 650);
+  if (!measureOnly) {
+    context.fillStyle = "#20211e";
+  }
+  y = drawText(secondary.title, margin, y, columnWidth, 29) + 8;
+  setFont(20, 400);
+  if (!measureOnly) {
+    context.fillStyle = "#70736b";
+  }
+  const leftEnd = drawText(secondary.summary, margin, y, columnWidth, 29);
+
+  let rightY = columnStart;
+  setFont(22, 700);
+  if (!measureOnly) {
+    context.fillStyle = "#465943";
+    context.fillText("Nearby thinkers", margin + columnWidth + columnGap, rightY);
+  }
+  rightY += 34;
+  setFont(20, 400);
+  if (!measureOnly) {
+    context.fillStyle = "#70736b";
+  }
+  const rightEnd = drawText(primary.thinkers, margin + columnWidth + columnGap, rightY, columnWidth, 29);
+  y = Math.max(leftEnd, rightEnd) + 40;
+
+  drawRule(y + 4);
+  y += 42;
+
+  setFont(22, 700);
+  if (!measureOnly) {
+    context.fillStyle = "#465943";
+    context.fillText("Top affinities", margin, y);
+  }
+  y += 36;
+
+  affinities.forEach((result) => {
+    setFont(20, 650);
+    if (!measureOnly) {
+      context.fillStyle = "#20211e";
+      context.fillText(result.title, margin, y);
+      context.fillStyle = "#70736b";
+      context.textAlign = "right";
+      context.fillText(result.score === 100 ? "Top" : `${result.score}/100`, width - margin, y);
+      context.textAlign = "left";
+
+      const barY = y + 14;
+      context.fillStyle = "#e8e2d6";
+      context.fillRect(margin, barY, contentWidth, 8);
+      context.fillStyle = "#465943";
+      context.fillRect(margin, barY, contentWidth * (result.score / 100), 8);
+    }
+    y += 46;
+  });
+
+  drawRule(y + 2);
+  y += 40;
+
+  setFont(22, 700);
+  if (!measureOnly) {
+    context.fillStyle = "#465943";
+    context.fillText("Suggested starting points", margin, y);
+  }
+  y += 38;
+
+  details.readings.forEach((reading) => {
+    setFont(21, 650);
+    if (!measureOnly) {
+      context.fillStyle = "#20211e";
+    }
+    y = drawText(reading.title, margin, y, contentWidth, 29) + 4;
+    setFont(19, 650);
+    if (!measureOnly) {
+      context.fillStyle = "#465943";
+    }
+    y = drawText(reading.author, margin, y, contentWidth, 27) + 4;
+    setFont(19, 400);
+    if (!measureOnly) {
+      context.fillStyle = "#70736b";
+    }
+    y = drawText(reading.note, margin, y, contentWidth, 27) + 18;
+  });
+
+  setFont(18, 650);
+  if (!measureOnly) {
+    context.fillStyle = "#465943";
+    context.fillText("philosophy sorting hat", margin, y + 20);
+  }
+
+  return y + margin + 24;
+}
+
+function canvasToBlob(canvas) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) {
+        resolve(blob);
+      } else {
+        reject(new Error("Could not create share image."));
+      }
+    }, "image/png");
+  });
+}
+
+function blobToDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => resolve(reader.result));
+    reader.addEventListener("error", () => reject(reader.error));
+    reader.readAsDataURL(blob);
+  });
+}
+
+function withTimeout(promise, timeoutMs) {
+  return Promise.race([
+    Promise.resolve(promise),
+    new Promise((_, reject) => {
+      window.setTimeout(() => reject(new Error("Share action timed out.")), timeoutMs);
+    })
+  ]);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function getShareHtml(imageDataUrl, text) {
+  return `
+    <section>
+      <img
+        src="${imageDataUrl}"
+        alt="Philosophy Sorting Hat result card"
+        style="display:block;max-width:100%;height:auto;"
+      >
+      <pre style="white-space:pre-wrap;font-family:system-ui,sans-serif;">${escapeHtml(text)}</pre>
+    </section>
+  `;
+}
+
+function copySelectedHtml(html) {
+  const container = document.createElement("div");
+  const selection = window.getSelection();
+  const range = document.createRange();
+
+  container.setAttribute("contenteditable", "true");
+  container.style.position = "fixed";
+  container.style.left = "-9999px";
+  container.style.top = "0";
+  container.innerHTML = html;
+  document.body.appendChild(container);
+
+  range.selectNodeContents(container);
+  selection.removeAllRanges();
+  selection.addRange(range);
+
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } finally {
+    selection.removeAllRanges();
+    container.remove();
+  }
+
+  return copied;
+}
+
+function copyPlainTextFallback(text) {
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  textarea.style.top = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } finally {
+    textarea.remove();
+  }
+
+  return copied;
+}
+
+function getShareImageFilename(title) {
+  return `${title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "philosophy-result"}.png`;
+}
+
+function showSharePreview(imageDataUrl, title) {
+  let preview = document.querySelector("#share-preview");
+  if (!preview) {
+    preview = document.createElement("div");
+    preview.id = "share-preview";
+    preview.className = "share-preview";
+    els.copyStatus.insertAdjacentElement("afterend", preview);
+  }
+
+  preview.innerHTML = `
+    <p>Clipboard image sharing is blocked here. Use the full result image below.</p>
+    <img src="${imageDataUrl}" alt="Full Philosophy Sorting Hat result card">
+    <a class="text-link" href="${imageDataUrl}" download="${getShareImageFilename(title)}">Download image</a>
+  `;
+}
+
+function hideSharePreview() {
+  document.querySelector("#share-preview")?.remove();
+}
+
+async function createShareImageBlob(data) {
+  const width = 1200;
+  const measureCanvas = document.createElement("canvas");
+  const measureContext = measureCanvas.getContext("2d");
+  const measuredHeight = Math.ceil(drawShareCardContent(measureContext, data, width, 0, true));
+  const scale = 2;
+  const canvas = document.createElement("canvas");
+  canvas.width = width * scale;
+  canvas.height = measuredHeight * scale;
+  const context = canvas.getContext("2d");
+  context.scale(scale, scale);
+  drawShareCardContent(context, data, width, measuredHeight, false);
+  return canvasToBlob(canvas);
+}
+
 async function copyResult() {
-  const text = getShareText();
+  const data = state.shareData || getShareData();
+  const text = state.shareText || getShareText(data);
+  let downloadableImageDataUrl = "";
+  els.copyStatus.textContent = "Preparing share image...";
+  hideSharePreview();
+
+  downloadableImageDataUrl = await withTimeout(
+    state.shareImageDataUrlPromise || Promise.resolve(""),
+    1200
+  ).catch(() => "");
 
   try {
-    await navigator.clipboard.writeText(text);
-    els.copyStatus.textContent = "Result copied.";
+    const imageBlob = await withTimeout(
+      state.shareImagePromise || createShareImageBlob(data),
+      1500
+    );
+    if (!imageBlob) {
+      throw new Error("Share image unavailable.");
+    }
+    if (!downloadableImageDataUrl) {
+      downloadableImageDataUrl = await withTimeout(blobToDataUrl(imageBlob), 800).catch(() => "");
+    }
+
+    if (navigator.clipboard?.write && window.ClipboardItem) {
+      try {
+        await withTimeout(
+          navigator.clipboard.write([
+            new ClipboardItem({
+              "image/png": imageBlob,
+              "text/plain": new Blob([text], { type: "text/plain" })
+            })
+          ]),
+          1500
+        );
+        els.copyStatus.textContent = "Full result image copied. Paste it into a message or document.";
+        return;
+      } catch {
+        await withTimeout(
+          navigator.clipboard.write([
+            new ClipboardItem({ "image/png": imageBlob })
+          ]),
+          1500
+        );
+        els.copyStatus.textContent = "Full result image copied. Paste it into a message or document.";
+        return;
+      }
+    }
   } catch {
-    els.copyStatus.textContent = text;
+    // Fall through to text sharing when image clipboard is unavailable.
+  }
+
+  if (downloadableImageDataUrl && copySelectedHtml(getShareHtml(downloadableImageDataUrl, text))) {
+    els.copyStatus.textContent = "Full result card copied. Paste it into a message or document.";
+    return;
+  }
+
+  try {
+    if (!navigator.clipboard?.writeText) {
+      throw new Error("Text clipboard unavailable.");
+    }
+    await withTimeout(navigator.clipboard.writeText(text), 1500);
+    if (downloadableImageDataUrl) {
+      showSharePreview(downloadableImageDataUrl, data.primary.title);
+      els.copyStatus.textContent = "Full result text copied. The result image is shown below for saving or dragging.";
+      return;
+    }
+    els.copyStatus.textContent = "Full result text copied. Image sharing is not available in this browser.";
+  } catch {
+    if (copyPlainTextFallback(text)) {
+      if (downloadableImageDataUrl) {
+        showSharePreview(downloadableImageDataUrl, data.primary.title);
+        els.copyStatus.textContent = "Full result text copied. The result image is shown below for saving or dragging.";
+        return;
+      }
+      els.copyStatus.textContent = "Full result text copied. Image sharing is not available in this browser.";
+      return;
+    }
+    if (!downloadableImageDataUrl) {
+      downloadableImageDataUrl = await withTimeout(
+        state.shareImageDataUrlPromise || Promise.resolve(""),
+        1200
+      ).catch(() => "");
+    }
+    if (downloadableImageDataUrl) {
+      showSharePreview(downloadableImageDataUrl, data.primary.title);
+      els.copyStatus.textContent = "Clipboard sharing is blocked here. The full result image is shown below for saving or dragging.";
+      return;
+    }
+    els.copyStatus.textContent = "Unable to copy automatically. Select the result text on this page to share it.";
   }
 }
 
