@@ -6,15 +6,13 @@
     <title>Philosophy Sorting Hat</title>
     <meta
       name="description"
-      content="A personality-style quiz that sorts respondents into a philosophy family or school of thought."
+      content="A minimalist adaptive quiz that maps respondents to a philosophy type or school of thought."
     >
-    <meta name="robots" content="noindex">
-    <link rel="canonical" href="https://anniehliang.com/philosophysortinghat/">
     <link
       rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='29' fill='%23315943'/%3E%3Ctext x='32' y='38' text-anchor='middle' font-size='20' font-family='Arial' font-weight='700' fill='%23fffdf8'%3EPH%3C/text%3E%3C/svg%3E"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='8' y='8' width='48' height='48' rx='6' fill='%2320211e'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-size='19' font-family='Arial' font-weight='700' fill='%23fffdf8'%3EPH%3C/text%3E%3C/svg%3E"
     >
-    <link rel="preload" href="assets/philosophy-quiz-table.png" as="image">
+    <link rel="preload" href="assets/philosophy-light.png" as="image">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -25,7 +23,7 @@
             <div class="brand-mark" aria-hidden="true">PH</div>
             <div>
               <p class="eyebrow">Philosophy Sorting Hat</p>
-              <h1 id="app-title">Find your philosophy family</h1>
+              <h1 id="app-title">Which philosophy fits you best?</h1>
             </div>
           </div>
           <div class="question-count" id="question-count" aria-live="polite"></div>
@@ -38,6 +36,10 @@
 
           <form id="quiz-form" class="quiz-form">
             <fieldset class="question-field">
+              <div class="question-meta">
+                <span id="question-mode"></span>
+                <span id="question-guidance"></span>
+              </div>
               <legend id="question-title"></legend>
               <p id="question-copy" class="question-copy"></p>
               <div id="options-list" class="options-list"></div>
@@ -69,12 +71,18 @@
 
           <div class="affinity-block">
             <h3>Top affinities</h3>
+            <p class="section-note" id="affinity-note">
+              These are relative match scores, not probabilities. Your strongest match is set to 100, and the others show how close they were to that top score.
+            </p>
             <div id="affinity-list" class="affinity-list"></div>
           </div>
 
           <div class="reading-block">
             <h3>Suggested starting points</h3>
-            <ul id="reading-list"></ul>
+            <p class="section-note">
+              A short reading path: title, author or source, and why it belongs with this result.
+            </p>
+            <div id="reading-list" class="reading-list"></div>
           </div>
 
           <div class="actions result-actions">
@@ -82,17 +90,28 @@
             <button type="button" class="button primary" id="copy-button">Copy result</button>
           </div>
           <p class="copy-status" id="copy-status" role="status"></p>
+
+          <div class="category-link-row">
+            <button type="button" class="text-link" id="view-categories-button">
+              View all possible philosophy families
+            </button>
+          </div>
+
+          <section class="category-directory is-hidden" id="category-directory" aria-labelledby="category-directory-title">
+            <h3 id="category-directory-title">All categories</h3>
+            <div id="category-list" class="category-list"></div>
+          </section>
         </section>
       </section>
 
-      <aside class="visual-pane" aria-label="Philosophy desk">
+      <aside class="visual-pane" aria-label="Minimal philosophy composition">
         <img
-          src="assets/philosophy-quiz-table.png"
-          alt="A warm wooden desk with books, a notebook, leaves, a compass, a stone, and candlelight."
+          src="assets/philosophy-light.png"
+          alt="A bright minimalist paper composition with a pale wash, a fine arc, a terracotta line, and two brass dots."
         >
         <div class="visual-overlay">
-          <p>18 philosophy families</p>
-          <div id="type-chip-list" class="type-chip-list" aria-hidden="true"></div>
+          <p>A quiet map of convictions</p>
+          <span>Meaning, knowledge, care, freedom, and the sacred.</span>
         </div>
       </aside>
     </main>
