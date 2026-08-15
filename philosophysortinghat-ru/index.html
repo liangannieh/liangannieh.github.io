@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Философская распределяющая шляпа</title>
+    <meta
+      name="description"
+      content="Адаптивный философский квиз с понятийным, повседневным, визуальным и смешанным маршрутами вопросов."
+    >
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='8' y='8' width='48' height='48' rx='6' fill='%2320211e'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-size='19' font-family='Arial' font-weight='700' fill='%23fffdf8'%3E%D0%A4%D0%A8%3C/text%3E%3C/svg%3E"
+    >
+    <link rel="preload" href="../philosophysortinghat/assets/philosophy-light.png" as="image">
+    <link rel="stylesheet" href="../philosophysortinghat/styles.css?v=20260815-2">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="quiz-pane" aria-labelledby="app-title">
+        <header class="app-header">
+          <div class="brand">
+            <div class="brand-mark" aria-hidden="true">ФШ</div>
+            <div>
+              <p class="eyebrow">Философская распределяющая шляпа</p>
+              <h1 id="app-title">Какая философия подходит вам больше всего?</h1>
+            </div>
+          </div>
+          <div class="question-count" id="question-count" aria-live="polite"></div>
+        </header>
+
+        <section class="route-view" id="route-view" aria-labelledby="route-title">
+          <p class="route-kicker">Выберите свою дверь</p>
+          <h2 id="route-title">На какие вопросы вам легче всего отвечать?</h2>
+          <p class="route-intro">
+            Начните с обычных ситуаций, картин, прямых философских идей или со смеси всего этого.
+          </p>
+
+          <div class="route-grid" id="route-grid">
+            <button type="button" class="route-card" data-route="meta">
+              <span class="route-card-topline"><span>Большие идеи</span></span>
+              <strong>Думать от первых начал</strong>
+              <span>Смысл, знание, нравственность, реальность и «я» — прямо и без обиняков.</span>
+              <em>«Хорошая жизнь — это прежде всего…»</em>
+            </button>
+            <button type="button" class="route-card" data-route="scenario">
+              <span class="route-card-topline"><span>Повседневный выбор</span></span>
+              <strong>Начать с обычной жизни</strong>
+              <span>Соседи, дела, чаты, сорванные планы, неловкие просьбы и маленькие решения.</span>
+              <em>«Ваши планы срываются. Что вы сделаете с этим днём?»</em>
+            </button>
+            <button type="button" class="route-card" data-route="visual">
+              <span class="route-card-topline"><span>Через искусство</span></span>
+              <strong>Думать, вглядываясь</strong>
+              <span>Картины и сцены, открывающие вопросы о ценности, истине и человеческой жизни.</span>
+              <em>«Что кажется самым важным на этом изображении?»</em>
+            </button>
+            <button type="button" class="route-card featured" data-route="mixed">
+              <span class="route-card-topline"><span>Понемногу обо всём</span><span class="route-badge">Рекомендуем</span></span>
+              <strong>Двигаться между тремя формами</strong>
+              <span>Разнообразный путь через прямые идеи, обыденные ситуации и искусство.</span>
+              <em>Лучший выбор, если вам любопытна каждая дверь.</em>
+            </button>
+          </div>
+
+          <div class="route-actions is-hidden" id="route-actions">
+            <button type="button" class="button secondary" id="cancel-route-button">Вернуться к квизу</button>
+          </div>
+        </section>
+
+        <section class="quiz-view is-hidden" id="quiz-view" aria-labelledby="question-title">
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+
+          <form id="quiz-form" class="quiz-form">
+            <fieldset class="question-field">
+              <div class="question-meta">
+                <span id="question-mode"></span>
+              </div>
+              <legend id="question-title" tabindex="-1"></legend>
+              <p id="question-copy" class="question-copy"></p>
+              <div id="question-media"></div>
+              <div id="options-list" class="options-list"></div>
+            </fieldset>
+
+            <div class="actions">
+              <button type="button" class="button secondary" id="back-button">Назад</button>
+              <button type="submit" class="button primary" id="next-button">Дальше</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="result-view is-hidden" id="result-view" aria-live="polite">
+          <div class="result-kicker">Ваш результат</div>
+          <h2 id="result-title"></h2>
+          <p id="result-summary" class="result-summary"></p>
+          <div id="result-description" class="result-description"></div>
+
+          <div class="result-meta">
+            <div>
+              <h3>Вторичное влияние</h3>
+              <p id="secondary-result"></p>
+            </div>
+            <div>
+              <h3>Близкие мыслители</h3>
+              <p id="result-thinkers"></p>
+            </div>
+          </div>
+
+          <div class="thinking-style-block">
+            <h3>Как вы входили в вопросы</h3>
+            <p class="thinking-style-title" id="thinking-style-title"></p>
+            <p id="thinking-style-description"></p>
+          </div>
+
+          <div class="affinity-block">
+            <h3>Наибольшее сродство</h3>
+            <p class="section-note" id="affinity-note">
+              Это относительные оценки совпадения, а не вероятности. Самому сильному совпадению присвоено 100, а остальные показывают, насколько они близки к этой верхней оценке.
+            </p>
+            <div id="affinity-list" class="affinity-list"></div>
+          </div>
+
+          <div class="reading-block">
+            <h3>С чего начать читать</h3>
+            <p class="section-note">
+              Короткий список для чтения: название, автор или источник и почему это подходит к вашему результату.
+            </p>
+            <div id="reading-list" class="reading-list"></div>
+          </div>
+
+          <div class="actions result-actions">
+            <button type="button" class="button secondary" id="retake-button">Пройти этот маршрут заново</button>
+            <button type="button" class="button secondary" id="another-route-button">Попробовать другой маршрут</button>
+            <button type="button" class="button primary" id="copy-button">Поделиться результатом</button>
+          </div>
+          <p class="copy-status" id="copy-status" role="status"></p>
+
+          <div class="category-link-row">
+            <button type="button" class="text-link" id="view-categories-button" aria-controls="category-directory" aria-expanded="false">
+              Показать все философские семьи
+            </button>
+          </div>
+
+          <section class="category-directory is-hidden" id="category-directory" aria-labelledby="category-directory-title">
+            <h3 id="category-directory-title">Все категории</h3>
+            <div id="category-list" class="category-list"></div>
+          </section>
+        </section>
+      </section>
+
+      <aside class="visual-pane" aria-label="Минималистичная философская композиция">
+        <img
+          src="../philosophysortinghat/assets/philosophy-light.png"
+          alt="Светлая минималистичная бумажная композиция с бледной заливкой, тонкой дугой, терракотовой линией и двумя латунными точками."
+        >
+      </aside>
+    </main>
+
+    <script src="scenario-variants.js?v=20260815-8"></script>
+    <script src="visual-variants.js?v=20260815-7"></script>
+    <script src="script.js?v=20260815-7"></script>
+  </body>
+</html>
