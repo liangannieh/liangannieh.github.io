@@ -11,3 +11,6 @@
 
 # Claude Code config
 .claude/
+
+# Dev-only test harnesses (not for the published site)
+philosophysortinghat/*.mjs

@@ -6,14 +6,14 @@
     <title>Philosophy Sorting Hat</title>
     <meta
       name="description"
-      content="A minimalist adaptive quiz that maps respondents to a philosophy type or school of thought."
+      content="An adaptive philosophy quiz with conceptual, everyday, visual, and mixed question routes."
     >
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='8' y='8' width='48' height='48' rx='6' fill='%2320211e'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-size='19' font-family='Arial' font-weight='700' fill='%23fffdf8'%3EPH%3C/text%3E%3C/svg%3E"
     >
     <link rel="preload" href="assets/philosophy-light.png" as="image">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260815-1">
   </head>
   <body>
     <main class="app-shell">
@@ -29,7 +29,46 @@
           <div class="question-count" id="question-count" aria-live="polite"></div>
         </header>
 
-        <section class="quiz-view" id="quiz-view" aria-labelledby="question-title">
+        <section class="route-view" id="route-view" aria-labelledby="route-title">
+          <p class="route-kicker">Choose your doorway</p>
+          <h2 id="route-title">What kind of question feels easiest to answer?</h2>
+          <p class="route-intro">
+            Start with ordinary situations, paintings, direct philosophical ideas, or a mixture.
+          </p>
+
+          <div class="route-grid" id="route-grid">
+            <button type="button" class="route-card" data-route="meta">
+              <span class="route-card-topline"><span>Big Ideas</span><span class="route-badge">Original</span></span>
+              <strong>Think from first principles</strong>
+              <span>Meaning, knowledge, morality, reality, and the self—stated directly.</span>
+              <em>“A good life is closest to…”</em>
+            </button>
+            <button type="button" class="route-card" data-route="scenario">
+              <span class="route-card-topline"><span>Everyday Choices</span></span>
+              <strong>Start with ordinary life</strong>
+              <span>Roommates, errands, group chats, broken plans, awkward favors, and small decisions.</span>
+              <em>“Your plans fall through. What do you do with the afternoon?”</em>
+            </button>
+            <button type="button" class="route-card" data-route="visual">
+              <span class="route-card-topline"><span>Through Art</span></span>
+              <strong>Think by looking closely</strong>
+              <span>Paintings and scenes that open questions about value, truth, and human life.</span>
+              <em>“What feels most important in this image?”</em>
+            </button>
+            <button type="button" class="route-card featured" data-route="mixed">
+              <span class="route-card-topline"><span>A Little of Everything</span><span class="route-badge">Recommended</span></span>
+              <strong>Move among three forms</strong>
+              <span>A varied path through direct ideas, ordinary situations, and art.</span>
+              <em>Best if you are curious about every doorway.</em>
+            </button>
+          </div>
+
+          <div class="route-actions is-hidden" id="route-actions">
+            <button type="button" class="button secondary" id="cancel-route-button">Return to the quiz</button>
+          </div>
+        </section>
+
+        <section class="quiz-view is-hidden" id="quiz-view" aria-labelledby="question-title">
           <div class="progress-track" aria-hidden="true">
             <div class="progress-fill" id="progress-fill"></div>
           </div>
@@ -38,10 +77,10 @@
             <fieldset class="question-field">
               <div class="question-meta">
                 <span id="question-mode"></span>
-                <span id="question-guidance"></span>
               </div>
-              <legend id="question-title"></legend>
+              <legend id="question-title" tabindex="-1"></legend>
               <p id="question-copy" class="question-copy"></p>
+              <div id="question-media"></div>
               <div id="options-list" class="options-list"></div>
             </fieldset>
 
@@ -69,6 +108,12 @@
             </div>
           </div>
 
+          <div class="thinking-style-block">
+            <h3>How you entered the questions</h3>
+            <p class="thinking-style-title" id="thinking-style-title"></p>
+            <p id="thinking-style-description"></p>
+          </div>
+
           <div class="affinity-block">
             <h3>Top affinities</h3>
             <p class="section-note" id="affinity-note">
@@ -86,13 +131,14 @@
           </div>
 
           <div class="actions result-actions">
-            <button type="button" class="button secondary" id="retake-button">Retake</button>
+            <button type="button" class="button secondary" id="retake-button">Retake this route</button>
+            <button type="button" class="button secondary" id="another-route-button">Try another route</button>
             <button type="button" class="button primary" id="copy-button">Share this result</button>
           </div>
           <p class="copy-status" id="copy-status" role="status"></p>
 
           <div class="category-link-row">
-            <button type="button" class="text-link" id="view-categories-button">
+            <button type="button" class="text-link" id="view-categories-button" aria-controls="category-directory" aria-expanded="false">
               View all possible philosophy families
             </button>
           </div>
@@ -109,9 +155,15 @@
           src="assets/philosophy-light.png"
           alt="A bright minimalist paper composition with a pale wash, a fine arc, a terracotta line, and two brass dots."
         >
+        <div class="visual-overlay">
+          <p>A quiet map of convictions</p>
+          <span>Meaning, knowledge, care, freedom, and the sacred.</span>
+        </div>
       </aside>
     </main>
 
-    <script src="script.js"></script>
+    <script src="scenario-variants.js?v=20260815-8"></script>
+    <script src="visual-variants.js?v=20260815-7"></script>
+    <script src="script.js?v=20260815-7"></script>
   </body>
 </html>

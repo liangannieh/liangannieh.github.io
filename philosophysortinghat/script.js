@@ -886,7 +886,7 @@ const QUESTIONS = [
       { text: "The passing moment is exactly why beauty matters.", weights: { romantic: 4, epicurean: 1 } },
       { text: "Enjoy ordinary goods before anxiety steals them.", weights: { epicurean: 3, buddhist: 1 } },
       { text: "Memory and ritual keep communities morally awake.", weights: { jewish_covenantal: 2, confucian: 2 } },
-      { text: "I must choose before the chance to choose disappears.", weights: { existentialist: 3, absurdist: 1 } }
+      { text: "Passing time has no built-in lesson; I decide what to make of my limited chances.", weights: { existentialist: 3, absurdist: 1 } }
     ]
   },
   {
@@ -930,7 +930,8 @@ const QUESTIONS = [
       { text: "That I might live by excuses instead of choosing honestly.", weights: { existentialist: 3, kantian: 1 } },
       { text: "That craving could make me miss the life I am actually living.", weights: { buddhist: 3, epicurean: 1 } },
       { text: "That society treats domination as normal or natural.", weights: { marxist_critical: 3, liberal_contractarian: 1 } },
-      { text: "That faith or tradition could become empty performance.", weights: { christian_personalist: 1, jewish_covenantal: 1, islamic_falsafa: 1, cynic: 1 } }
+      { text: "That faith or tradition could become empty performance.", weights: { christian_personalist: 1, jewish_covenantal: 1, islamic_falsafa: 1, cynic: 1 } },
+      { text: "That people can succeed while neglecting the relationships and responsibilities that formed them.", weights: { confucian: 3, care_ethicist: 2, aristotelian: 1 } }
     ]
   },
   {
@@ -962,6 +963,34 @@ const QUESTIONS = [
     ]
   },
   {
+    id: "ai-design",
+    title: "When creating an AI system, what should guide its design most strongly?",
+    copy: "Choose the principle you would establish first when important goals compete.",
+    mode: "single",
+    answers: [
+      { text: "Some rights and forms of human dignity must never be sacrificed for better performance.", weights: { kantian: 3, liberal_contractarian: 2 } },
+      { text: "Test its real effects and continually revise it to reduce harm and improve outcomes.", weights: { utilitarian: 3, pragmatist: 2, empiricist: 1 } },
+      { text: "Give affected people a meaningful voice in its design, rules, and appeal process.", weights: { care_ethicist: 2, confucian: 2, liberal_contractarian: 1 } },
+      { text: "Examine who supplies the labor and data, who controls the system, and who gains from it.", weights: { marxist_critical: 3, cynic: 1 } },
+      { text: "Design it to strengthen human judgment and ability rather than quietly replacing them.", weights: { aristotelian: 3, humanist: 2 } },
+      { text: "Keep its use limited, reversible, and closely monitored while its consequences remain uncertain.", weights: { skeptic: 3, empiricist: 2 } }
+    ]
+  },
+  {
+    id: "ai-authorship",
+    title: "When AI helps create something presented in your name, what matters most?",
+    copy: "Think of a letter, report, image, or piece of music.",
+    mode: "single",
+    answers: [
+      { text: "Being honest about how it was made and not claiming work I did not do.", weights: { kantian: 3, liberal_contractarian: 1 } },
+      { text: "Whether using it improves the result without causing more harm than the alternatives.", weights: { utilitarian: 3, pragmatist: 2 } },
+      { text: "Keeping enough understanding and practice that my own judgment and abilities still develop.", weights: { aristotelian: 3, humanist: 1 } },
+      { text: "How the system obtained its training material and whether other people's labor is being exploited.", weights: { marxist_critical: 3, care_ethicist: 1 } },
+      { text: "Whether the result still expresses something I genuinely chose and stand behind.", weights: { existentialist: 3, romantic: 1 } },
+      { text: "Whether I am using efficiency to avoid the attention or care another person is owed.", weights: { care_ethicist: 3, confucian: 1, christian_personalist: 1 } }
+    ]
+  },
+  {
     id: "faith-reason",
     title: "Faith and reason should...",
     copy: "Choose the relationship that makes the most sense to you.",
@@ -972,10 +1001,40 @@ const QUESTIONS = [
       { text: "Be ordered toward love, mercy, and the person.", weights: { christian_personalist: 3, care_ethicist: 1 } },
       { text: "Give way to contemplative insight when language runs out.", weights: { mystical: 3, vedantic: 1 } },
       { text: "Remain secondary to evidence and natural explanation.", weights: { empiricist: 3, humanist: 1 } },
-      { text: "Be treated as human productions that require critique.", weights: { marxist_critical: 2, nihilist: 2, cynic: 1 } }
+      { text: "Be treated as human productions that require critique.", weights: { marxist_critical: 2, nihilist: 2, cynic: 1 } },
+      { text: "Meet in practices that cultivate gratitude, responsibility, and good relationships.", weights: { confucian: 3, pragmatist: 1, aristotelian: 1 } }
     ]
   }
 ];
+
+const ROUTES = {
+  meta: {
+    label: "Big Ideas",
+    format: "meta",
+    resultTitle: "A conceptual way in",
+    resultDescription: "You chose to approach philosophy through explicit ideas, distinctions, and first principles. That is a preference observed in this quiz, not a fixed personality type."
+  },
+  scenario: {
+    label: "Everyday Choices",
+    format: "scenario",
+    resultTitle: "A situational way in",
+    resultDescription: "You chose to begin with small decisions, familiar frictions, and the texture of ordinary life. That is a preference observed in this quiz, not a fixed personality type."
+  },
+  visual: {
+    label: "Through Art",
+    format: "visual",
+    resultTitle: "An interpretive way in",
+    resultDescription: "You chose to approach ideas through images, attention, ambiguity, and perspective. That is a preference observed in this quiz, not a fixed personality type."
+  },
+  mixed: {
+    label: "A Little of Everything",
+    format: "mixed",
+    resultTitle: "An exploratory way in",
+    resultDescription: "You moved among direct ideas, ordinary situations, and images rather than relying on a single doorway into philosophy."
+  }
+};
+
+const MIXED_FORMAT_SEQUENCE = ["scenario", "visual", "meta"];
 
 const BALANCE_MIN = 0.9;
 const BALANCE_MAX = 1.12;
@@ -1002,9 +1061,13 @@ const TYPE_BALANCE = (() => {
 })();
 
 const state = {
+  route: null,
+  initialRoute: null,
+  routePickerOpen: true,
   currentIndex: 0,
   path: [...QUESTION_SEEDS],
   responses: {},
+  responseFormats: {},
   shareData: null,
   shareText: "",
   shareImagePromise: null,
@@ -1012,15 +1075,19 @@ const state = {
 };
 
 const els = {
+  routeView: document.querySelector("#route-view"),
+  routeGrid: document.querySelector("#route-grid"),
+  routeActions: document.querySelector("#route-actions"),
+  cancelRouteButton: document.querySelector("#cancel-route-button"),
   quizView: document.querySelector("#quiz-view"),
   resultView: document.querySelector("#result-view"),
   quizForm: document.querySelector("#quiz-form"),
   questionCount: document.querySelector("#question-count"),
   questionMode: document.querySelector("#question-mode"),
-  questionGuidance: document.querySelector("#question-guidance"),
   progressFill: document.querySelector("#progress-fill"),
   questionTitle: document.querySelector("#question-title"),
   questionCopy: document.querySelector("#question-copy"),
+  questionMedia: document.querySelector("#question-media"),
   optionsList: document.querySelector("#options-list"),
   backButton: document.querySelector("#back-button"),
   nextButton: document.querySelector("#next-button"),
@@ -1029,9 +1096,12 @@ const els = {
   resultDescription: document.querySelector("#result-description"),
   secondaryResult: document.querySelector("#secondary-result"),
   resultThinkers: document.querySelector("#result-thinkers"),
+  thinkingStyleTitle: document.querySelector("#thinking-style-title"),
+  thinkingStyleDescription: document.querySelector("#thinking-style-description"),
   affinityList: document.querySelector("#affinity-list"),
   readingList: document.querySelector("#reading-list"),
   retakeButton: document.querySelector("#retake-button"),
+  anotherRouteButton: document.querySelector("#another-route-button"),
   copyButton: document.querySelector("#copy-button"),
   copyStatus: document.querySelector("#copy-status"),
   viewCategoriesButton: document.querySelector("#view-categories-button"),
@@ -1040,6 +1110,85 @@ const els = {
 };
 
 const questionById = Object.fromEntries(QUESTIONS.map((question) => [question.id, question]));
+
+function getFormatForQuestion(questionId) {
+  const route = state.route || "meta";
+  if (route !== "mixed") return ROUTES[route].format;
+  const pathIndex = Math.max(0, state.path.indexOf(questionId));
+  return MIXED_FORMAT_SEQUENCE[pathIndex % MIXED_FORMAT_SEQUENCE.length];
+}
+
+function getQuestionPresentation(question) {
+  const format = getFormatForQuestion(question.id);
+  let variant = null;
+
+  if (format === "scenario" && typeof SCENARIO_VARIANTS !== "undefined") {
+    variant = SCENARIO_VARIANTS[question.id];
+  } else if (format === "visual" && typeof VISUAL_VARIANTS !== "undefined") {
+    variant = VISUAL_VARIANTS[question.id];
+  }
+
+  if (!variant) {
+    return { ...question, format: "meta", artwork: null, prompt: "" };
+  }
+
+  return {
+    ...question,
+    ...variant,
+    format,
+    artwork: format === "visual" && typeof ARTWORKS !== "undefined"
+      ? ARTWORKS[variant.artwork]
+      : null,
+    answers: question.answers.map((answer, index) => ({
+      ...answer,
+      text: variant.answers[index]
+    }))
+  };
+}
+
+function showRoutePicker() {
+  state.routePickerOpen = true;
+  els.quizView.classList.add("is-hidden");
+  els.resultView.classList.add("is-hidden");
+  els.routeView.classList.remove("is-hidden");
+  els.routeActions.classList.toggle("is-hidden", !state.route);
+  els.questionCount.textContent = state.route ? ROUTES[state.route].label : "Choose a route";
+  document.querySelectorAll(".route-card").forEach((card) => {
+    card.classList.toggle("is-current", card.dataset.route === state.route);
+    card.setAttribute("aria-pressed", card.dataset.route === state.route ? "true" : "false");
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function chooseRoute(route) {
+  if (!ROUTES[route]) return;
+  state.route = route;
+  state.initialRoute ||= route;
+  state.routePickerOpen = false;
+  els.routeView.classList.add("is-hidden");
+  els.resultView.classList.add("is-hidden");
+  els.quizView.classList.remove("is-hidden");
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  focusQuestionHeading();
+}
+
+function getThinkingStyle() {
+  const answeredIds = getAnsweredQuestionIds();
+  const counts = { meta: 0, scenario: 0, visual: 0 };
+  answeredIds.forEach((id) => {
+    const format = state.responseFormats[id] || "meta";
+    counts[format] = (counts[format] || 0) + 1;
+  });
+  const usedFormats = Object.entries(counts).filter(([, count]) => count > 0);
+  const dominant = [...usedFormats].sort((a, b) => b[1] - a[1])[0];
+  const exploratory = usedFormats.length >= 3
+    || (usedFormats.length > 1 && dominant[1] / answeredIds.length < 0.7);
+
+  if (exploratory) return ROUTES.mixed;
+  const routeForFormat = Object.values(ROUTES).find((route) => route.format === dominant?.[0]);
+  return routeForFormat || ROUTES[state.initialRoute] || ROUTES.meta;
+}
 
 function getCurrentQuestion() {
   return questionById[state.path[state.currentIndex]];
@@ -1127,10 +1276,14 @@ function chooseNextQuestion() {
 }
 
 function truncateFuture() {
-  state.path.slice(state.currentIndex + 1).forEach((questionId) => {
+  const prefix = state.path.slice(0, state.currentIndex + 1);
+  const future = state.path.slice(state.currentIndex + 1);
+  future.forEach((questionId) => {
     delete state.responses[questionId];
+    delete state.responseFormats[questionId];
   });
-  state.path = state.path.slice(0, state.currentIndex + 1);
+  const remainingSeeds = QUESTION_SEEDS.filter((id) => !prefix.includes(id));
+  state.path = [...prefix, ...remainingSeeds];
 }
 
 function setSelectedAnswer(index) {
@@ -1148,27 +1301,55 @@ function setSelectedAnswer(index) {
     state.responses[question.id] = [index];
   }
 
+  state.responseFormats[question.id] = getFormatForQuestion(question.id);
+
   truncateFuture();
   renderQuestion();
+  document.querySelector(`#${question.id}-a${index}`)?.focus();
+}
+
+function focusQuestionHeading() {
+  window.setTimeout(() => els.questionTitle.focus({ preventScroll: true }), 0);
 }
 
 function renderQuestion() {
-  const question = getCurrentQuestion();
-  const selected = state.responses[question.id] || [];
+  const baseQuestion = getCurrentQuestion();
+  const question = getQuestionPresentation(baseQuestion);
+  const selected = state.responses[baseQuestion.id] || [];
   const answered = getAnsweredQuestionIds().length;
   const projectedTotal = Math.max(MAX_QUESTIONS, state.path.length);
   const progress = Math.min((answered / projectedTotal) * 100, 96);
   const isMulti = question.mode === "multi";
+  const formatLabels = {
+    meta: "Big Ideas",
+    scenario: "Everyday Choices",
+    visual: "Through Art"
+  };
 
   els.questionCount.textContent = `Question ${state.currentIndex + 1}`;
-  els.questionMode.textContent = isMulti ? `Select up to ${question.maxSelect}` : "Select one";
-  els.questionGuidance.textContent = "";
+  els.questionMode.textContent = `${formatLabels[question.format]} · ${isMulti ? `Select up to ${question.maxSelect}` : "Select one"}`;
   els.progressFill.style.width = `${progress}%`;
   els.questionTitle.textContent = question.title;
-  els.questionCopy.textContent = question.copy;
+  els.questionCopy.textContent = question.format === "visual" ? "" : question.copy;
+  els.questionCopy.classList.toggle("is-hidden", question.format === "visual");
   els.backButton.disabled = state.currentIndex === 0;
   els.nextButton.disabled = selected.length === 0;
   els.nextButton.textContent = shouldFinish() ? "See result" : "Next";
+
+  if (question.format === "visual" && question.artwork) {
+    const artwork = question.artwork;
+    els.questionMedia.innerHTML = `
+      <figure class="artwork-card">
+        <img src="${escapeHtml(artwork.src)}" alt="${escapeHtml(artwork.alt)}">
+        <figcaption class="artwork-caption">
+          <p><strong>${escapeHtml(artwork.title)}</strong><br>${escapeHtml(artwork.artist)}${artwork.year ? `, ${escapeHtml(artwork.year)}` : ""}</p>
+          ${artwork.sourceUrl ? `<a href="${escapeHtml(artwork.sourceUrl)}" target="_blank" rel="noopener noreferrer">Artwork source</a>` : ""}
+        </figcaption>
+      </figure>
+    `;
+  } else {
+    els.questionMedia.innerHTML = "";
+  }
 
   els.optionsList.innerHTML = question.answers.map((answer, index) => {
     const optionId = `${question.id}-a${index}`;
@@ -1179,7 +1360,7 @@ function renderQuestion() {
     return `
       <label class="option${selectedClass}" for="${optionId}">
         <input id="${optionId}" type="${inputType}" name="answer" value="${index}" ${checked}>
-        <span>${answer.text}</span>
+        <span>${escapeHtml(answer.text)}</span>
       </label>
     `;
   }).join("");
@@ -1192,11 +1373,14 @@ function renderResult() {
   const primaryDetails = TYPE_DETAILS[primary.key];
   const topScore = Math.max(primary.score, 1);
   const confidence = getConfidence(ranked);
+  const thinkingStyle = getThinkingStyle();
 
+  els.routeView.classList.add("is-hidden");
   els.quizView.classList.add("is-hidden");
   els.resultView.classList.remove("is-hidden");
   els.categoryDirectory.classList.add("is-hidden");
   els.viewCategoriesButton.textContent = "View all possible philosophy families";
+  els.viewCategoriesButton.setAttribute("aria-expanded", "false");
   els.questionCount.textContent = `${confidence.answered} questions`;
   els.progressFill.style.width = "100%";
 
@@ -1213,6 +1397,8 @@ function renderResult() {
   `;
   els.secondaryResult.textContent = `${secondary.title}: ${secondary.summary}`;
   els.resultThinkers.textContent = primary.thinkers;
+  els.thinkingStyleTitle.textContent = thinkingStyle.resultTitle;
+  els.thinkingStyleDescription.textContent = thinkingStyle.resultDescription;
   els.readingList.innerHTML = primaryDetails.readings.map((reading) => `
     <article class="reading-item">
       <h4>${reading.title}</h4>
@@ -1268,21 +1454,32 @@ function toggleCategoryDirectory() {
   els.viewCategoriesButton.textContent = isHidden
     ? "View all possible philosophy families"
     : "Hide all possible philosophy families";
+  els.viewCategoriesButton.setAttribute("aria-expanded", String(!isHidden));
 }
 
-function resetQuiz() {
+function resetQuiz({ chooseRouteAgain = false } = {}) {
   state.currentIndex = 0;
   state.path = [...QUESTION_SEEDS];
   state.responses = {};
+  state.responseFormats = {};
   state.shareData = null;
   state.shareText = "";
   state.shareImagePromise = null;
   state.shareImageDataUrlPromise = null;
   hideSharePreview();
   els.resultView.classList.add("is-hidden");
-  els.quizView.classList.remove("is-hidden");
   els.copyStatus.textContent = "";
-  renderQuestion();
+
+  if (chooseRouteAgain) {
+    state.route = null;
+    state.initialRoute = null;
+    showRoutePicker();
+  } else {
+    state.initialRoute = state.route;
+    els.routeView.classList.add("is-hidden");
+    els.quizView.classList.remove("is-hidden");
+    renderQuestion();
+  }
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -1292,6 +1489,7 @@ function getShareData() {
   const secondary = ranked[1];
   const primaryDetails = TYPE_DETAILS[primary.key];
   const topScore = Math.max(primary.score, 1);
+  const thinkingStyle = getThinkingStyle();
   const affinities = ranked.slice(0, 6).map((result) => ({
     title: result.title,
     score: Math.round((result.score / topScore) * 100)
@@ -1301,12 +1499,13 @@ function getShareData() {
     primary,
     secondary,
     details: primaryDetails,
+    thinkingStyle,
     affinities
   };
 }
 
 function getShareText(data = getShareData()) {
-  const { primary, secondary, details, affinities } = data;
+  const { primary, secondary, details, thinkingStyle, affinities } = data;
   return [
     `My Philosophy Sorting Hat result: ${primary.title}`,
     "",
@@ -1319,6 +1518,9 @@ function getShareText(data = getShareData()) {
     "",
     `Secondary influence: ${secondary.title}`,
     secondary.summary,
+    "",
+    `How I entered the questions: ${thinkingStyle.resultTitle}`,
+    thinkingStyle.resultDescription,
     "",
     `Nearby thinkers: ${primary.thinkers}`,
     "",
@@ -1791,6 +1993,13 @@ els.optionsList.addEventListener("change", (event) => {
   }
 });
 
+els.routeGrid.addEventListener("click", (event) => {
+  const card = event.target.closest(".route-card");
+  if (card) chooseRoute(card.dataset.route);
+});
+
+els.cancelRouteButton.addEventListener("click", () => chooseRoute(state.route));
+
 els.quizForm.addEventListener("submit", (event) => {
   event.preventDefault();
   if (!state.responses[getCurrentQuestion().id]?.length) return;
@@ -1808,6 +2017,7 @@ els.quizForm.addEventListener("submit", (event) => {
   state.currentIndex += 1;
   renderQuestion();
   window.scrollTo({ top: 0, behavior: "smooth" });
+  focusQuestionHeading();
 });
 
 els.backButton.addEventListener("click", () => {
@@ -1815,10 +2025,12 @@ els.backButton.addEventListener("click", () => {
   state.currentIndex -= 1;
   renderQuestion();
   window.scrollTo({ top: 0, behavior: "smooth" });
+  focusQuestionHeading();
 });
 
-els.retakeButton.addEventListener("click", resetQuiz);
+els.retakeButton.addEventListener("click", () => resetQuiz());
+els.anotherRouteButton.addEventListener("click", () => resetQuiz({ chooseRouteAgain: true }));
 els.copyButton.addEventListener("click", copyResult);
 els.viewCategoriesButton.addEventListener("click", toggleCategoryDirectory);
 
-renderQuestion();
+showRoutePicker();
