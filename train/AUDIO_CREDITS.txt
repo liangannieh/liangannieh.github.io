@@ -1,0 +1,51 @@
+MANDARIN PRONUNCIATION RECORDINGS
+================================
+
+Source: Yoyo Chinese Interactive Pinyin Chart.
+Copyright Yoyo Chinese Inc. All rights reserved.
+https://yoyochinese.com/chinese-learning-tools/Mandarin-Chinese-pronunciation-lesson/pinyin-chart-table
+
+Nine short pronunciation examples are included in this private learning
+activity. Source attribution is not a general redistribution license.
+No endorsement by Yoyo Chinese is implied.
+
+The chart's published syllable/tone mappings provide these counting forms:
+1 yi1, 2 er4, 4 si4, 5 wu3,
+6 liu4, 7 qi1, 8 ba1, 9 jiu3, 10 shi2.
+
+Original MP3s: audio/original-recordings/1.mp3 through 10.mp3, except 3.mp3.
+The original source for three has been replaced as described below.
+Direct URLs: https://cdn.yoyochinese.com/audio/pychart/<sound>.mp3
+Each exact source URL and file hash is recorded in audio/sources.json.
+
+Processing: decoded to mono PCM WAV at the original sample rate; trimmed
+outer silence with padding; adjusted volume. Speech speed and pitch are
+unchanged. The animation plays the recordings at their original speed.
+The optional counting-preview.wav joins the same clips with half-second gaps.
+
+About the pronunciation chart:
+https://yoyochinese.com/blog/new-free-pinyin-chart-pdf-download-practice-chinese-pronunciation
+
+SYNTHESIZED SPEECH
+=================
+
+audio/3.wav is a fresh generation of the text "三。" with the
+zh-CN-XiaoxiaoNeural Mandarin voice. Default speed and pitch are preserved.
+The original generated MP3 is audio/original-recordings/3.mp3, and its
+provenance and hashes are in audio/sources.json. This replaces the earlier
+Yoyo Chinese san1 recording.
+
+audio/totals/1.wav through 10.wav are synthesized with Microsoft's
+zh-CN-XiaoxiaoNeural Mandarin voice via edge-tts. They are AI-generated
+speech, separate from the human pronunciation clips credited above.
+Each phrase uses the parent's selected wording (ge huoche), with liang for two.
+Each phrase is generated in full, without joining isolated syllables.
+Default rate (+0%) and pitch (+0Hz); trimmed outer silence and leveled volume.
+The spoken script, voice, durations, and hashes are in audio/totals/sources.json.
+The original generated MP3s are in audio/totals/originals/.
+The short endings-preview.wav uses the first three phrases with gaps.
+
+Voice documentation:
+https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=tts
+Generation helper:
+https://github.com/rany2/edge-tts

@@ -1,0 +1,102 @@
+[
+  {
+    "number": 1,
+    "text": "一个火车。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "kind": "neural text-to-speech",
+    "rate": "+0%",
+    "pitch": "+0Hz",
+    "duration_seconds": 1.005,
+    "sha256": "d3318a38f72fa9282d291c1115972d5c2df8b9f7e0d4180c68414da2c9eeb9be"
+  },
+  {
+    "number": 2,
+    "text": "两个火车。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "kind": "neural text-to-speech",
+    "rate": "+0%",
+    "pitch": "+0Hz",
+    "duration_seconds": 1.035,
+    "sha256": "77c22b0adc2c90f75b7a6386653a279239622926f042a7715d87dbbb52ed7bb5"
+  },
+  {
+    "number": 3,
+    "text": "三个火车。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "kind": "neural text-to-speech",
+    "rate": "+0%",
+    "pitch": "+0Hz",
+    "duration_seconds": 1.068,
+    "sha256": "5da3b52f07d86992ca20c162844f6eb6f4302b2ef1f17016b04f82ca5711efaa"
+  },
+  {
+    "number": 4,
+    "text": "四个火车。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "kind": "neural text-to-speech",
+    "rate": "+0%",
+    "pitch": "+0Hz",
+    "duration_seconds": 1.056,
+    "sha256": "40bbb24128226e59538b56135e232c8aea41bcd97612588fb87d8105a8308c1f"
+  },
+  {
+    "number": 5,
+    "text": "五个火车。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "kind": "neural text-to-speech",
+    "rate": "+0%",
+    "pitch": "+0Hz",
+    "duration_seconds": 0.989,
+    "sha256": "a8c8bec63039aa9219a67220c67814c18cd77606bb045e9119f5f6f3cdbf1379"
+  },
+  {
+    "number": 6,
+    "text": "六个火车。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "kind": "neural text-to-speech",
+    "rate": "+0%",
+    "pitch": "+0Hz",
+    "duration_seconds": 0.993,
+    "sha256": "1746854476f67b3b2df00e4728f22e305af6769b8ed52b9c980e1d5225c72d22"
+  },
+  {
+    "number": 7,
+    "text": "七个火车。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "kind": "neural text-to-speech",
+    "rate": "+0%",
+    "pitch": "+0Hz",
+    "duration_seconds": 1.047,
+    "sha256": "ed8720c218c2c1be5361432207608b2a5b2f53ae590a0f319662fc8f914349fc"
+  },
+  {
+    "number": 8,
+    "text": "八个火车。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "kind": "neural text-to-speech",
+    "rate": "+0%",
+    "pitch": "+0Hz",
+    "duration_seconds": 0.989,
+    "sha256": "b05668b1727fc3f3d2b8c5b012b99590f77d1792e9861902942e6bb47847c831"
+  },
+  {
+    "number": 9,
+    "text": "九个火车。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "kind": "neural text-to-speech",
+    "rate": "+0%",
+    "pitch": "+0Hz",
+    "duration_seconds": 1.042,
+    "sha256": "aab8c73204fdd59b2cfe39556c3ecf937c021c6b79859b4361e0b4b264f6215c"
+  },
+  {
+    "number": 10,
+    "text": "十个火车。",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "kind": "neural text-to-speech",
+    "rate": "+0%",
+    "pitch": "+0Hz",
+    "duration_seconds": 1.101,
+    "sha256": "1231ed98339c2c2a706284b1f1f183d219bf138ab66e4c50e6b43c185fd71f0c"
+  }
+]

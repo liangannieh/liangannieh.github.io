@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f5ec">
+  <title>Little Mandarin · The Number Train</title>
+  <link rel="stylesheet" href="styles.css?v=san-6">
+  <script src="animation.js?v=san-6" defer></script>
+</head>
+<body>
+  <main class="app">
+    <header class="masthead">
+      <h1>Mandarin number train</h1>
+      <span class="adult-label">Playback controls for grown-ups</span>
+    </header>
+
+    <section class="journey" aria-label="Animated Mandarin counting lesson">
+      <div class="scene" id="scene">
+        <div class="number-card" id="number-card" aria-live="polite" aria-atomic="true">
+          <span class="numeral" id="numeral">1</span>
+        </div>
+        <svg id="landscape" viewBox="0 0 1200 510" preserveAspectRatio="xMidYMax meet" role="img" aria-labelledby="scene-title">
+          <title id="scene-title">One steam train in a peaceful countryside.</title>
+          <defs>
+            <linearGradient id="metal-shade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".4" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#101c17" stop-opacity=".24"/></linearGradient>
+            <pattern id="sleepers" width="38" height="26" patternUnits="userSpaceOnUse"><rect x="3" y="1" width="12" height="24" rx="3" fill="#b5a186"/></pattern>
+            <g id="wheel"><circle r="15" fill="#304a47"/><circle r="10" fill="#f8edd5"/><path d="M-8 0H8M0-8V8" stroke="#a5af9c" stroke-width="2.5"/><circle r="3.3" fill="#304a47"/></g>
+            <g id="cloud"><path d="M0 30c0-11 8-18 20-17C23-6 55-8 63 12c20-5 32 5 32 18Z" fill="#fffdf5"/></g>
+            <g id="tree"><path d="M0 0v70m0-40-18-14m18 26 20-18" stroke="#74917a" stroke-width="6" stroke-linecap="round"/><ellipse cy="-10" rx="34" ry="48" fill="#91b99a"/><path d="M0-26V23m0-15 14-13" stroke="#6f9c80" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+          </defs>
+          <rect width="1200" height="510" fill="#e4f0ed"/>
+          <circle cx="915" cy="112" r="44" fill="#edc975"/>
+
+          <g class="cloud cloud-one"><use href="#cloud" x="570" y="84"/></g>
+          <g class="cloud cloud-two"><use href="#cloud" x="1000" y="179" transform="scale(.85)"/></g>
+          <g class="cloud cloud-three"><use href="#cloud" x="1130" y="75" transform="scale(.75)"/></g>
+          <path d="M0 318Q150 180 310 288Q450 157 650 286Q806 149 1014 263Q1120 215 1200 268V510H0Z" fill="#c7dcd0"/>
+          <path d="M0 362Q217 236 434 332Q580 259 807 339Q1040 197 1200 300V510H0Z" fill="#aecbb4"/>
+          <path d="M0 388Q300 328 563 382T1200 363V510H0Z" fill="#d4dfb9"/>
+          <g transform="translate(1010 302)"><use href="#tree"/><use href="#tree" transform="translate(95 25) scale(.75)"/></g>
+          <g transform="translate(760 286)"><rect x="-43" y="9" width="100" height="69" rx="4" fill="#fbefd3"/><path d="m-54 12 60-44 63 44Z" fill="#c78d72"/><rect x="-8" y="36" width="25" height="42" rx="12" fill="#6c9990"/><rect x="-33" y="30" width="16" height="19" rx="3" fill="#9bbeb3"/><rect x="30" y="30" width="16" height="19" rx="3" fill="#9bbeb3"/><path d="M-48 79H63" stroke="#9ab59a" stroke-width="5" stroke-linecap="round"/></g>
+          <g transform="translate(78 328) scale(.65)"><use href="#tree"/></g>
+          <g opacity=".7" fill="#85a787"><path d="m330 379 4-12 5 12m189-18 3-11 5 11m369 14 4-11 4 11m254-9 4-12 4 12"/></g>
+          <g id="tracks"></g>
+          <g id="train"></g>
+        </svg>
+      </div>
+
+      <div class="lesson-bar">
+        <div class="transport">
+          <button id="previous" class="icon-button" aria-label="Previous number" title="Previous number"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+          <button id="play" class="play-button"><span id="play-symbol" aria-hidden="true">▶</span><span id="play-label">Play sequence</span></button>
+          <button id="next" class="icon-button" aria-label="Next number" title="Next number"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button>
+        </div>
+        <button id="listen" class="plain-button">Replay count</button>
+        <p id="instruction" role="status">Ready</p>
+        <button id="fullscreen" class="plain-button">Full screen</button>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Play runs from the selected stop to ten. Replay repeats only this stop.</p>
+      <div class="settings"><label for="number-select">Count to</label><select id="number-select" aria-label="Count to"></select><span class="settings-divider"></span><button id="sound" aria-pressed="true">Sound on</button><span class="settings-divider"></span><label for="speed">Pace</label><select id="speed"><option value="0.75">Gentle</option><option value="1" selected>Normal</option><option value="1.3">Lively</option></select></div>
+    </footer>
+    <p id="audio-notice" role="status" hidden>Sound couldn’t play. The counting animation still works; try opening index.html in Safari, Chrome, or Edge.</p>
+    <noscript><p class="noscript">Please enable JavaScript to play the number train.</p></noscript>
+  </main>
+</body>
+</html>
